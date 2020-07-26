@@ -32,7 +32,7 @@ Part of DCC++ BASE STATION for the Arduino
 //  3 = Seeed Studio Ethernet/SD-Card Shield W5200
 //  4 = adafruit-atwinc1500 WiFi module
 
-#define COMM_INTERFACE   0
+#define COMM_INTERFACE   4
 
 /////////////////////////////////////////////////////////////////////////////////////
 //
@@ -61,7 +61,7 @@ Part of DCC++ BASE STATION for the Arduino
 
 // timer for reset checking, in milliseconds
 // NOTE: this is a GLOBAL timer. it doesn't reset X milliseconds after a short,
-// it resets when the global timer, set below, comeds around to check for a reset.
+// it resets when the global timer, set below, comes around to check for a reset.
 #define MAIN_LINE_RESET_DELAY 3000
 
 // how many times the circuit will reset before the main power must be recycled

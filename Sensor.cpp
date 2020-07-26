@@ -68,9 +68,15 @@ void Sensor::check(){
 
   for(tt=firstSensor;tt!=NULL;tt=tt->nextSensor){
     #ifndef USE_MCP_IO
-    tt->signal=tt->signal*(1.0-SENSOR_DECAY)+digitalRead(tt->data.pin)*SENSOR_DECAY;
+
     #else
-    tt->signal=tt->signal*(1.0-SENSOR_DECAY)+mcp.digitalRead(tt->data.pin)*SENSOR_DECAY;
+    if (tt->data.pin >= 100)
+    {
+      tt->signal=tt->signal*(1.0-SENSOR_DECAY)+mcp.digitalRead(tt->data.pin - 100)*SENSOR_DECAY;
+    }else {
+      tt->signal=tt->signal*(1.0-SENSOR_DECAY)+digitalRead(tt->data.pin)*SENSOR_DECAY;
+    }
+
     #endif
 
     if(!tt->active && tt->signal<0.5){
@@ -126,8 +132,15 @@ Sensor *Sensor::create(int snum, int pin, int pullUp, int v){
   pinMode(pin,INPUT);         // set mode to input
   digitalWrite(pin,pullUp);   // don't use Arduino's internal pull-up resistors for external infrared sensors --- each sensor must have its own 1K external pull-up resistor
   #else
-  mcp.pinMode(pin,INPUT);
-  mcp.digitalWrite(pin,pullUp);
+  if (pin >= 100)
+  {
+    mcp.pinMode((pin - 100),INPUT);
+    mcp.digitalWrite((pin - 100),pullUp);
+  }else{
+    pinMode(pin,INPUT);
+    digitalWrite(pin,pullUp);
+  }
+
   #endif
 
   if(v==1)
