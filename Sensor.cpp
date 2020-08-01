@@ -68,7 +68,7 @@ void Sensor::check(){
 
   for(tt=firstSensor;tt!=NULL;tt=tt->nextSensor){
     #ifndef USE_MCP_IO
-
+    tt->signal=tt->signal*(1.0-SENSOR_DECAY)+digitalRead(tt->data.pin)*SENSOR_DECAY;
     #else
     if (tt->data.pin >= 100)
     {
