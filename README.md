@@ -8,7 +8,7 @@ Important note: this code may not work for you unless you are using the same har
 
 Arduino UNO
 
-non-standard Moter shield connections, in otherwords, it needs to be wired off-board, or could be built directly on an UNO proto-shield from a bare-bones ATmega328PU chip and clock crystal.
+non-standard Moter shield connections, in otherwords, it needs to be wired off-board, or could be built directly on an UNO proto-shield from a bare-bones ATmega328PU chip and clock crystal, following the connections in the schematic.
 
 the PDF schematic (BareBones_Connections.pdf) describes the connections.
 
