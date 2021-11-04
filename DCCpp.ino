@@ -171,22 +171,12 @@ DCC++ BASE STATION is configured through the Config.h file that contains all use
 #include "DCCpp.h"
 #include "PacketRegister.h"
 #include "CurrentMonitor.h"
-#include "Sensor.h"
 #include "SerialCommand.h"
 #include "Accessories.h"
 #include "EEStore.h"
 #include "Config.h"
-#include "Comm.h"
-#include "arduino_secrets.h"
-#include <Wire.h>
-#include <tjf_mcp23017.h>
 //#include <MemoryFree.h>
-tjf_mcp23017 mcp(2);
-#ifdef USE_IIC_LCD
-#include "Wire.h"
-#include "Adafruit_LiquidCrystal.h"
-Adafruit_LiquidCrystal lcd(0);
-#endif // USE_IIC_LCD
+
 
 
 
@@ -206,33 +196,6 @@ CurrentMonitor progMonitor(11,A1,96,"<p3>");  // create monitor for current on P
 unsigned long LastRestartDelay = 0UL;
 
 void showConfiguration();
-
-/**
-calcADCforCT: the CT (Current Transformer, i think...) is bipolar, so it is biased 5V/2.
-this function is made to simply convert the negative value, to a positive value.
-the bias circuit constitutes two resistors, 10Kohm each, connected in series between
-5Vdc, and ground. the center tap of the two resistors therefore supplies about 2.5Vdc
-and is connected to one leg of the CT, while the other leg connects to the Arduino
-analog input pin. there is also a 10uf cap between the center tap, and ground,
-used to smooth the 2.5Vdc source.
-**/
-long calcADCforCT(long adcReading)
-{
-  long outVar = 0;
-  long inVar = (adcReading - 127);
-  if (USE_CT_SENSE == 1)
-  {
-    if (abs(inVar) < 0)
-    {
-      outVar = (inVar * -1);
-    } else {
-      outVar = inVar;
-    }
-  } else {
-    outVar = adcReading;
-  }
-  return outVar;
-}
 
 // SET UP COMMUNICATIONS INTERFACE - FOR STANDARD SERIAL, NOTHING NEEDS TO BE DONE
 
@@ -277,7 +240,6 @@ void loop(){
     //testMonitor.Reset();
   }
 
-  Sensor::check();           // check sensors for activate/de-activate
   //Serial.println(freeMemory());
 } // loop
 
@@ -291,34 +253,8 @@ void setup(){
 
   Serial.flush();
 
-  #ifdef USE_IIC_LCD
-    lcd.begin(20, 4);
-  #endif // USE_IIC_LCD
-
-  #ifdef SDCARD_CS
-    pinMode(SDCARD_CS,OUTPUT);
-    digitalWrite(SDCARD_CS,HIGH);     // Deselect the SD card
-  #endif
-
   EEStore::init();                                          // initialize and load Turnout and Sensor definitions stored in EEPROM
-  #ifdef USE_MCP_IO
-    mcp.addMCP(1);
-    mcp.addMCP(2);
-    mcp.begin();
-  #endif // USE_MCP_IO
 
-  //pinMode(5,OUTPUT);
-  //digitalWrite(5,LOW); // LED to show activity
-
-  //pinMode(A5,INPUT);                                       // if pin A5 is grounded upon start-up, print system configuration and halt
-  //digitalWrite(A5,HIGH);
-//  if(!digitalRead(A5))
-//    showConfiguration();
-
-#ifdef USE_IIC_LCD
-  lcd.setCursor(1,2);
-  lcd.print(VERSION);
-#endif // USE_IIC_LCD
 
   Serial.print("<iDCC++ BASE STATION FOR ARDUINO ");      // Print Status to Serial Line regardless of COMM_TYPE setting so use can open Serial Monitor and check configurtion
   Serial.print(ARDUINO_TYPE);
@@ -359,7 +295,6 @@ void setup(){
     INTERFACE.begin();
   #endif
 
-  if (USE_ACK_FOLLOW_PIN > 0) pinMode(USE_ACK_FOLLOW_PIN,OUTPUT);
 
   SerialCommand::init(&mainRegs, &progRegs, &mainMonitor, &progMonitor);   // create structure to read and parse commands from serial line
 
@@ -599,7 +534,7 @@ ISR(TIMER3_COMPB_vect){              // set interrupt service for OCR3B of TIMER
 
 void showConfiguration(){
 
-  int mac_address[]=MAC_ADDRESS;
+
 
   Serial.print("\n*** DCC++ CONFIGURATION ***\n");
 
@@ -636,55 +571,11 @@ void showConfiguration(){
 
   Serial.print("\n\nNUM TURNOUTS: ");
   Serial.print(EEStore::eeStore->data.nTurnouts);
-  Serial.print("\n     SENSORS: ");
-  Serial.print(EEStore::eeStore->data.nSensors);
-  Serial.print("\n     OUTPUTS: ");
-  Serial.print(EEStore::eeStore->data.nOutputs);
+
 
   Serial.print("\n\nINTERFACE:    ");
   #if COMM_TYPE == 0
     Serial.print("SERIAL");
-  #elif COMM_TYPE == 1
-    #if COMM_INTERFACE != 4
-      Serial.print(COMM_SHIELD_NAME);
-      Serial.print("\nMAC ADDRESS:  ");
-      for(int i=0;i<5;i++){
-        Serial.print(mac_address[i],HEX);
-        Serial.print(":");
-      }
-      Serial.print(mac_address[5],HEX);
-      Serial.print("\nPORT:         ");
-      Serial.print(ETHERNET_PORT);
-      Serial.print("\nIP ADDRESS:   ");
-
-      #ifdef IP_ADDRESS
-        Ethernet.begin(mac,IP_ADDRESS);           // Start networking using STATIC IP Address
-      #else
-        Ethernet.begin(mac);                      // Start networking using DHCP to get an IP Address
-      #endif
-        Serial.print(Ethernet.localIP());
-
-        #ifdef IP_ADDRESS
-          Serial.print(" (STATIC)");
-        #else
-          Serial.print(" (DHCP)");
-        #endif
-    #else
-      Serial.print("SSID: ");
-      Serial.println(WiFi.SSID());
-
-      // print your WiFi shield's IP address:
-      IPAddress ip = WiFi.localIP();
-      Serial.print("IP Address: ");
-      Serial.println(ip);
-
-      // print the received signal strength:
-      long rssi = WiFi.RSSI();
-      Serial.print("RSSI:");
-      Serial.print(rssi);
-      Serial.println(" dBm");
-    #endif
-
   #endif
   Serial.print("\n\nPROGRAM HALTED - PLEASE RESTART ARDUINO");
 

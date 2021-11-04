@@ -15,8 +15,6 @@ Part of DCC++ BASE STATION for the Arduino
 struct EEStoreData{
   char id[sizeof(EESTORE_ID)];
   int nTurnouts;
-  int nSensors;  
-  int nOutputs;
   int serverID;
 };
 
@@ -31,6 +29,6 @@ struct EEStore{
   static void store();
   static void clear();
 };
-  
+
 #endif
 

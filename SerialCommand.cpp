@@ -17,10 +17,8 @@ Part of DCC++ BASE STATION for the Arduino
 #include "SerialCommand.h"
 #include "DCCpp.h"
 #include "Accessories.h"
-#include "Sensor.h"
-#include "Outputs.h"
 #include "EEStore.h"
-#include "Comm.h"
+
 
 extern int __heap_start, *__brkval;
 
@@ -64,25 +62,6 @@ void SerialCommand::process(){
      else if(strlen(commandString)<MAX_COMMAND_LENGTH)    // if comandString still has space, append character just read from serial line
      {  sprintf(commandString,"%s%c",commandString,c); }    // otherwise, character is ignored (but continue to look for '<' or '>')
     } // while
-
-  #elif COMM_TYPE == 1
-    #if COMM_INTERFACE == 4
-      WiFiClient client = INTERFACE.available();
-    #else
-      EthernetClient client=INTERFACE.available();
-    #endif // COMM_INTERFACE
-
-    if(client){
-      while(client.connected() && client.available()){        // while there is data on the network
-      c=client.read();
-      if(c=='<')                    // start of new command
-        sprintf(commandString,"");
-      else if(c=='>')               // end of new command
-        parse(commandString);
-      else if(strlen(commandString)<MAX_COMMAND_LENGTH)    // if comandString still has space, append character just read from network
-        sprintf(commandString,"%s%c",commandString,c);     // otherwise, character is ignored (but continue to look for '<' or '>')
-      } // while
-    }
 
   #endif
 
@@ -191,53 +170,6 @@ void SerialCommand::parse(char *com){
  *   USED TO CREATE/EDIT/REMOVE/SHOW TURNOUT DEFINITIONS
  */
       Turnout::parse(com+1);
-      break;
-
-/***** CREATE/EDIT/REMOVE/SHOW & OPERATE AN OUTPUT PIN  ****/
-
-    case 'Z':       // <Z ID ACTIVATE>
-/*
- *   <Z ID ACTIVATE>:          sets output ID to either the "active" or "inactive" state
- *
- *   ID: the numeric ID (0-32767) of the output to control
- *   ACTIVATE: 0 (active) or 1 (inactive)
- *
- *   returns: <Y ID ACTIVATE> or <X> if output ID does not exist
- *
- *   *** SEE OUTPUTS.CPP FOR COMPLETE INFO ON THE DIFFERENT VARIATIONS OF THE "O" COMMAND
- *   USED TO CREATE/EDIT/REMOVE/SHOW TURNOUT DEFINITIONS
- */
-      Output::parse(com+1);
-      break;
-
-/***** CREATE/EDIT/REMOVE/SHOW A SENSOR  ****/
-
-    case 'S':
-/*
- *   *** SEE SENSOR.CPP FOR COMPLETE INFO ON THE DIFFERENT VARIATIONS OF THE "S" COMMAND
- *   USED TO CREATE/EDIT/REMOVE/SHOW SENSOR DEFINITIONS
- */
-      Sensor::parse(com+1);
-      break;
-
-/***** SHOW STATUS OF ALL SENSORS ****/
-
-    case 'Q':         // <Q>
-/*
- *    returns: the status of each sensor ID in the form <Q ID> (active) or <q ID> (not active)
- */
-      Sensor::status();
-      //RemoteSensor::status();
-      break;
-
-/***** SHOW STATUS OF ALL OUTPUTS ****/
-
-    case 'Y':         // <Y>
-/*
- *    returns: the status of each output ID in the form <Y ID> (active) or <y ID> (not active)
- */
-      Output::show();
-      //RemoteOutput::status();
       break;
 
 /***** REFRESH DCC++ SERVER DATA  ****/
@@ -437,17 +369,9 @@ void SerialCommand::parse(char *com){
 
       #if COMM_TYPE == 0
         INTERFACE.print("SERIAL>");
-      #elif COMM_TYPE == 1
-        #if COMM_INTERFACE != 4
-          INTERFACE.print(Ethernet.localIP());
-        #else
-          INTERFACE.print(WiFi.localIP());
-        #endif
-        INTERFACE.print(">");
       #endif
 
       Turnout::show();
-      Output::show();
 
       break;
 
@@ -463,10 +387,6 @@ void SerialCommand::parse(char *com){
     EEStore::store();
     INTERFACE.print("<e ");
     INTERFACE.print(EEStore::eeStore->data.nTurnouts);
-    INTERFACE.print(" ");
-    INTERFACE.print(EEStore::eeStore->data.nSensors);
-    INTERFACE.print(" ");
-    INTERFACE.print(EEStore::eeStore->data.nOutputs);
     INTERFACE.print(" ");
     INTERFACE.print(EEStore::eeStore->data.serverID);
     INTERFACE.print(">");
@@ -521,12 +441,6 @@ void SerialCommand::parse(char *com){
       bitSet(TCCR0B,CS02);    // set Timer 0 prescale=256 - SLOWS NORMAL SPEED BY A FACTOR OF 4
       bitClear(TCCR0B,CS01);
       bitClear(TCCR0B,CS00);
-
-    #else                     // Configuration for MEGA
-
-      bitClear(TCCR3B,CS32);    // set Timer 3 prescale=8 - SLOWS NORMAL SPEED BY A FACTOR OF 8
-      bitSet(TCCR3B,CS31);
-      bitClear(TCCR3B,CS30);
 
     #endif
 

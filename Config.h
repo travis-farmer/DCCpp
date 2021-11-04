@@ -32,7 +32,7 @@ Part of DCC++ BASE STATION for the Arduino
 //  3 = Seeed Studio Ethernet/SD-Card Shield W5200
 //  4 = adafruit-atwinc1500 WiFi module
 
-#define COMM_INTERFACE   4
+#define COMM_INTERFACE   0
 
 /////////////////////////////////////////////////////////////////////////////////////
 //
@@ -46,14 +46,14 @@ Part of DCC++ BASE STATION for the Arduino
 // DEFINE PORT TO USE FOR ETHERNET COMMUNICATIONS INTERFACE
 //
 
-#define ETHERNET_PORT 2560
+//#define ETHERNET_PORT 2560
 
 /////////////////////////////////////////////////////////////////////////////////////
 //
 // DEFINE MAC ADDRESS ARRAY FOR ETHERNET COMMUNICATIONS INTERFACE
 //
 
-#define MAC_ADDRESS {  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEF }
+//#define MAC_ADDRESS {  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEF }
 
 /////////////////////////////////////////////////////////////////////////////////////
 // Options for Travis Farmer's code changes
@@ -67,7 +67,4 @@ Part of DCC++ BASE STATION for the Arduino
 // how many times the circuit will reset before the main power must be recycled
 #define MAIN_LINE_RESET_MAX 3
 
-#define USE_MCP_IO 1 // 1 = active. replace Arduino pin I/O, with MCP I/O.
-#define USE_CT_SENSE 0 // 1 = active. use for bipolar current sensing, with 2.5V bias
-#define USE_ACK_FOLLOW_PIN 0 // 0 = inactive, otherwise, enter output pin number.
-// #define USE_IIC_LCD 0
+

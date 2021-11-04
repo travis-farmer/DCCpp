@@ -9,7 +9,7 @@ Part of DCC++ BASE STATION for the Arduino
 
 #include "DCCpp.h"
 #include "PacketRegister.h"
-#include "Comm.h"
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -228,7 +228,7 @@ void RegisterList::readCV(char *s) volatile{
     base=0;
 
     for(int j=0;j<ACK_BASE_COUNT;j++)
-      base+=(calcADCforCT(analogRead(CURRENT_MONITOR_PIN_PROG)));
+      base+=(analogRead(CURRENT_MONITOR_PIN_PROG));
     base/=ACK_BASE_COUNT;
 
     bRead[2]=0xE8+i;
@@ -238,13 +238,10 @@ void RegisterList::readCV(char *s) volatile{
     loadPacket(0,resetPacket,2,1);          // forces code to wait until all repeats of bRead are completed (and decoder begins to respond)
 
     for(int j=0;j<ACK_SAMPLE_COUNT;j++){
-      c=((calcADCforCT(analogRead(CURRENT_MONITOR_PIN_PROG))-base)*ACK_SAMPLE_SMOOTHING+c*(1.0-ACK_SAMPLE_SMOOTHING));
+      c=((analogRead(CURRENT_MONITOR_PIN_PROG)-base)*ACK_SAMPLE_SMOOTHING+c*(1.0-ACK_SAMPLE_SMOOTHING));
       if(c>ACK_SAMPLE_THRESHOLD)
       {
         d=1;
-        if (USE_ACK_FOLLOW_PIN > 0) digitalWrite(USE_ACK_FOLLOW_PIN,HIGH);
-      } else {
-        if (USE_ACK_FOLLOW_PIN > 0) digitalWrite(USE_ACK_FOLLOW_PIN,LOW);
       }
 
     }
@@ -257,7 +254,7 @@ void RegisterList::readCV(char *s) volatile{
   base=0;
 
   for(int j=0;j<ACK_BASE_COUNT;j++)
-    base+=(calcADCforCT(analogRead(CURRENT_MONITOR_PIN_PROG)));
+    base+=(analogRead(CURRENT_MONITOR_PIN_PROG));
   base/=ACK_BASE_COUNT;
 
   bRead[0]=0x74+(highByte(cv)&0x03);   // set-up to re-verify entire byte
@@ -268,13 +265,10 @@ void RegisterList::readCV(char *s) volatile{
   loadPacket(0,resetPacket,2,1);          // forces code to wait until all repeats of bRead are completed (and decoder begins to respond)
 
   for(int j=0;j<ACK_SAMPLE_COUNT;j++){
-    c=((calcADCforCT(analogRead(CURRENT_MONITOR_PIN_PROG))-base)*ACK_SAMPLE_SMOOTHING+c*(1.0-ACK_SAMPLE_SMOOTHING));
+    c=((analogRead(CURRENT_MONITOR_PIN_PROG)-base)*ACK_SAMPLE_SMOOTHING+c*(1.0-ACK_SAMPLE_SMOOTHING));
     if(c>ACK_SAMPLE_THRESHOLD)
     {
       d=1;
-      if (USE_ACK_FOLLOW_PIN > 0) digitalWrite(USE_ACK_FOLLOW_PIN,HIGH);
-    } else {
-      if (USE_ACK_FOLLOW_PIN > 0) digitalWrite(USE_ACK_FOLLOW_PIN,LOW);
     }
   }
 
@@ -319,7 +313,7 @@ void RegisterList::writeCVByte(char *s) volatile{
   base=0;
 
   for(int j=0;j<ACK_BASE_COUNT;j++)
-    base+=(calcADCforCT(analogRead(CURRENT_MONITOR_PIN_PROG)));
+    base+=(analogRead(CURRENT_MONITOR_PIN_PROG));
   base/=ACK_BASE_COUNT;
 
   bWrite[0]=0x74+(highByte(cv)&0x03);   // set-up to re-verify entire byte
@@ -329,13 +323,10 @@ void RegisterList::writeCVByte(char *s) volatile{
   loadPacket(0,resetPacket,2,1);          // forces code to wait until all repeats of bRead are completed (and decoder begins to respond)
 
   for(int j=0;j<ACK_SAMPLE_COUNT;j++){
-    c=((calcADCforCT(analogRead(CURRENT_MONITOR_PIN_PROG))-base)*ACK_SAMPLE_SMOOTHING+c*(1.0-ACK_SAMPLE_SMOOTHING));
+    c=((analogRead(CURRENT_MONITOR_PIN_PROG)-base)*ACK_SAMPLE_SMOOTHING+c*(1.0-ACK_SAMPLE_SMOOTHING));
     if(c>ACK_SAMPLE_THRESHOLD)
     {
       d=1;
-      if (USE_ACK_FOLLOW_PIN > 0) digitalWrite(USE_ACK_FOLLOW_PIN,HIGH);
-    } else {
-      if (USE_ACK_FOLLOW_PIN > 0) digitalWrite(USE_ACK_FOLLOW_PIN,LOW);
     }
   }
 
@@ -382,7 +373,7 @@ void RegisterList::writeCVBit(char *s) volatile{
   base=0;
 
   for(int j=0;j<ACK_BASE_COUNT;j++)
-    base+=(calcADCforCT(analogRead(CURRENT_MONITOR_PIN_PROG)));
+    base+=(analogRead(CURRENT_MONITOR_PIN_PROG));
   base/=ACK_BASE_COUNT;
 
   bitClear(bWrite[2],4);              // change instruction code from Write Bit to Verify Bit
@@ -392,13 +383,10 @@ void RegisterList::writeCVBit(char *s) volatile{
   loadPacket(0,resetPacket,2,1);          // forces code to wait until all repeats of bRead are completed (and decoder begins to respond)
 
   for(int j=0;j<ACK_SAMPLE_COUNT;j++){
-    c=((calcADCforCT(analogRead(CURRENT_MONITOR_PIN_PROG))-base)*ACK_SAMPLE_SMOOTHING+c*(1.0-ACK_SAMPLE_SMOOTHING));
+    c=((analogRead(CURRENT_MONITOR_PIN_PROG)-base)*ACK_SAMPLE_SMOOTHING+c*(1.0-ACK_SAMPLE_SMOOTHING));
     if(c>ACK_SAMPLE_THRESHOLD)
     {
       d=1;
-      if (USE_ACK_FOLLOW_PIN > 0) digitalWrite(USE_ACK_FOLLOW_PIN,HIGH);
-    } else {
-      if (USE_ACK_FOLLOW_PIN > 0) digitalWrite(USE_ACK_FOLLOW_PIN,LOW);
     }
   }
 

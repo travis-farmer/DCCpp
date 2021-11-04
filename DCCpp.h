@@ -39,13 +39,6 @@ Part of DCC++ BASE STATION for the Arduino
 
   #endif
 
-#elif defined  ARDUINO_AVR_MEGA2560
-
-  #define ARDUINO_TYPE    "MEGA"
-
-  #define DCC_SIGNAL_PIN_MAIN 12          // Arduino Mega - uses OC1B
-  #define DCC_SIGNAL_PIN_PROG 2           // Arduino Mega - uses OC3B
-
 #else
 
   #error CANNOT COMPILE - DCC++ ONLY WORKS WITH AN ARDUINO UNO OR AN ARDUINO MEGA 1280/2560
@@ -69,19 +62,6 @@ Part of DCC++ BASE STATION for the Arduino
   #define DIRECTION_MOTOR_CHANNEL_PIN_A 9 //12
   #define DIRECTION_MOTOR_CHANNEL_PIN_B 13
 
-#elif MOTOR_SHIELD_TYPE == 1
-
-  #define MOTOR_SHIELD_NAME "POLOLU MC33926 MOTOR SHIELD"
-
-  #define SIGNAL_ENABLE_PIN_MAIN 9
-  #define SIGNAL_ENABLE_PIN_PROG 11
-
-  #define CURRENT_MONITOR_PIN_MAIN A0
-  #define CURRENT_MONITOR_PIN_PROG A1
-
-  #define DIRECTION_MOTOR_CHANNEL_PIN_A 7
-  #define DIRECTION_MOTOR_CHANNEL_PIN_B 8
-
 #else
 
   #error CANNOT COMPILE - PLEASE SELECT A PROPER MOTOR SHIELD TYPE
@@ -97,12 +77,6 @@ Part of DCC++ BASE STATION for the Arduino
   #define COMM_TYPE 0
   #define INTERFACE Serial
 
-
-#elif (COMM_INTERFACE==1) || (COMM_INTERFACE==2) || (COMM_INTERFACE==3) || (COMM_INTERFACE==4)
-
-  #define COMM_TYPE 1
-  #define INTERFACE eServer
-  #define SDCARD_CS 4
 
 #else
 

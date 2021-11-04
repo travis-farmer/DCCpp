@@ -25,7 +25,7 @@ extern int PinCounter;
 extern int pins[];
 extern int Apins[];
 extern void SendExtInfo(byte outAddr, byte outValue);
-extern long calcADCforCT(long adcReading);
+
 
 struct CurrentMonitor{
   static long int sampleTime;

@@ -9,7 +9,7 @@ Part of DCC++ BASE STATION for the Arduino
 
 #include "DCCpp.h"
 #include "CurrentMonitor.h"
-#include "Comm.h"
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -34,8 +34,8 @@ boolean CurrentMonitor::checkTime(){
 } // CurrentMonitor::checkTime
 
 void CurrentMonitor::check(){
-    //current=map(analogRead(pin)*CURRENT_SAMPLE_SMOOTHING+current*(1.0-CURRENT_SAMPLE_SMOOTHING),512,1023,0,1023);        // compute new exponentially-smoothed current
-  current=(calcADCforCT(analogRead(Apin))*CURRENT_SAMPLE_SMOOTHING+current*(1.0-CURRENT_SAMPLE_SMOOTHING));
+  current=map(analogRead(pin)*CURRENT_SAMPLE_SMOOTHING+current*(1.0-CURRENT_SAMPLE_SMOOTHING),512,1023,0,1023);        // compute new exponentially-smoothed current
+  //current=(calcADCforCT(analogRead(Apin))*CURRENT_SAMPLE_SMOOTHING+current*(1.0-CURRENT_SAMPLE_SMOOTHING));
   if(current>MaxCurrent){                    // current overload and Prog Signal is on (or could have checked Main Signal, since both are always on or off together)
     if (digitalRead(pin) == HIGH)
     {

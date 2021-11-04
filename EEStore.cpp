@@ -10,8 +10,6 @@ Part of DCC++ BASE STATION for the Arduino
 #include "DCCpp.h"
 #include "EEStore.h"
 #include "Accessories.h"
-#include "Sensor.h"
-#include "Outputs.h"
 #include <EEPROM.h>
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,16 +24,12 @@ void EEStore::init(){
   if(strncmp(eeStore->data.id,EESTORE_ID,sizeof(EESTORE_ID))!=0){    // check to see that eeStore contains valid DCC++ ID
     sprintf(eeStore->data.id,EESTORE_ID);                           // if not, create blank eeStore structure (no turnouts, no sensors) and save it back to EEPROM
     eeStore->data.nTurnouts=0;
-    eeStore->data.nSensors=0;
-    eeStore->data.nOutputs=0;
     eeStore->data.serverID=0;
     EEPROM.put(0,eeStore->data);
   }
 
   reset();            // set memory pointer to first free EEPROM space
   Turnout::load();    // load turnout definitions
-  Sensor::load();     // load sensor definitions
-  Output::load();     // load output definitions
   //DccServer::load();  // load DCC++ server definitions
 }
 
@@ -45,8 +39,6 @@ void EEStore::clear(){
 
   sprintf(eeStore->data.id,EESTORE_ID);                           // create blank eeStore structure (no turnouts, no sensors) and save it back to EEPROM
   eeStore->data.nTurnouts=0;
-  eeStore->data.nSensors=0;
-  eeStore->data.nOutputs=0;
   eeStore->data.serverID=0;
   EEPROM.put(0,eeStore->data);
 
@@ -57,8 +49,7 @@ void EEStore::clear(){
 void EEStore::store(){
   reset();
   Turnout::store();
-  Sensor::store();
-  Output::store();
+
   //DccServer::store();
   EEPROM.put(0,eeStore->data);
 }

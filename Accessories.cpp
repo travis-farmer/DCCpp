@@ -31,7 +31,7 @@ variations of the "T" command:
 
   <T>:                         lists all defined turnouts
                                returns: <H ID ADDRESS SUBADDRESS THROW> for each defined turnout or <X> if no turnouts defined
-  
+
 where
 
   ID: the numeric ID (0-32767) of the turnout to control
@@ -64,7 +64,7 @@ the directions of any Turnouts being monitored or controlled by a separate inter
 #include "DCCpp.h"
 #include "EEStore.h"
 #include <EEPROM.h>
-#include "Comm.h"
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -80,7 +80,7 @@ void Turnout::activate(int s){
   if(data.tStatus==0)
     INTERFACE.print(" 0>");
   else
-    INTERFACE.print(" 1>"); 
+    INTERFACE.print(" 1>");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -88,20 +88,20 @@ void Turnout::activate(int s){
 Turnout *Turnout::get(int n){
   Turnout *tt;
   for(tt=firstTurnout;tt!=NULL && tt->data.id!=n;tt=tt->nextTurnout);
-  return(tt); 
+  return(tt);
 }
 ///////////////////////////////////////////////////////////////////////////////
 
 void Turnout::remove(int n){
   Turnout *tt,*pp;
-  
+
   for(tt=firstTurnout;tt!=NULL && tt->data.id!=n;pp=tt,tt=tt->nextTurnout);
 
   if(tt==NULL){
     INTERFACE.print("<X>");
     return;
   }
-  
+
   if(tt==firstTurnout)
     firstTurnout=tt->nextTurnout;
   else
@@ -121,7 +121,7 @@ void Turnout::show(int n){
     INTERFACE.print("<X>");
     return;
   }
-    
+
   for(tt=firstTurnout;tt!=NULL;tt=tt->nextTurnout){
     INTERFACE.print("<H");
     INTERFACE.print(tt->data.id);
@@ -134,7 +134,7 @@ void Turnout::show(int n){
     if(tt->data.tStatus==0)
        INTERFACE.print(" 0>");
      else
-       INTERFACE.print(" 1>"); 
+       INTERFACE.print(" 1>");
   }
 }
 
@@ -143,9 +143,9 @@ void Turnout::show(int n){
 void Turnout::parse(char *c){
   int n,s,m;
   Turnout *t;
-  
+
   switch(sscanf(c,"%d %d %d",&n,&s,&m)){
-    
+
     case 2:                     // argument is string with id number of turnout followed by zero (not thrown) or one (thrown)
       t=get(n);
       if(t!=NULL)
@@ -161,7 +161,7 @@ void Turnout::parse(char *c){
     case 1:                     // argument is a string with id number only
       remove(n);
     break;
-    
+
     case -1:                    // no arguments
       show(1);                  // verbose show
     break;
@@ -175,22 +175,22 @@ void Turnout::load(){
   Turnout *tt;
 
   for(int i=0;i<EEStore::eeStore->data.nTurnouts;i++){
-    EEPROM.get(EEStore::pointer(),data);  
+    EEPROM.get(EEStore::pointer(),data);
     tt=create(data.id,data.address,data.subAddress);
     tt->data.tStatus=data.tStatus;
     tt->num=EEStore::pointer();
     EEStore::advance(sizeof(tt->data));
-  }  
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void Turnout::store(){
   Turnout *tt;
-  
+
   tt=firstTurnout;
   EEStore::eeStore->data.nTurnouts=0;
-  
+
   while(tt!=NULL){
     tt->num=EEStore::pointer();
     EEPROM.put(EEStore::pointer(),tt->data);
@@ -198,13 +198,13 @@ void Turnout::store(){
     tt=tt->nextTurnout;
     EEStore::eeStore->data.nTurnouts++;
   }
-  
+
 }
 ///////////////////////////////////////////////////////////////////////////////
 
 Turnout *Turnout::create(int id, int add, int subAdd, int v){
   Turnout *tt;
-  
+
   if(firstTurnout==NULL){
     firstTurnout=(Turnout *)calloc(1,sizeof(Turnout));
     tt=firstTurnout;
@@ -221,7 +221,7 @@ Turnout *Turnout::create(int id, int add, int subAdd, int v){
       INTERFACE.print("<X>");
     return(tt);
   }
-  
+
   tt->data.id=id;
   tt->data.address=add;
   tt->data.subAddress=subAdd;
@@ -229,7 +229,7 @@ Turnout *Turnout::create(int id, int add, int subAdd, int v){
   if(v==1)
     INTERFACE.print("<O>");
   return(tt);
-  
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
