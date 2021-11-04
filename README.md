@@ -10,6 +10,6 @@ Arduino UNO
 
 non-standard Moter shield connections, in otherwords, it needs to be wired off-board, or could be built directly on an UNO proto-shield from a bare-bones ATmega328PU chip and clock crystal.
 
-the eagle CAD schematic (TO BE DONE) describes the connections.
+the PDF schematic (BareBones_Connections.pdf) describes the connections.
 
 Some code is original, most from https://github.com/atanisoft , with some modifications that i have done, and to my understanding from Atani, it is based on work i did in the past.
