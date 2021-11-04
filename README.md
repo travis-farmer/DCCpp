@@ -1,24 +1,15 @@
 # DCCpp
-My own changes to the DCC++ Base Station
+My own changes to the DCC++ Base Station (stripped down)
 
 Original DCC++ source came from https://github.com/DccPlusPlus/BaseStation/tree/master-2.0 all rights belong to the original author, with the exception of any changes i have made.
 All files with the commit label Base  Level Copy, are the original files.
 
 Important note: this code may not work for you unless you are using the same hardware that i am using. and as it is under construction, it may not work anyway, given my limited testing prototype.
 
-Arduino Mega 2560
+Arduino UNO
 
-Arduino Ethernet shield (W5100 chipset)
+non-standard Moter shield connections, in otherwords, it needs to be wired off-board, or could be built directly on an UNO proto-shield from a bare-bones ATmega328PU chip and clock crystal.
 
-or
+the eagle CAD schematic (TO BE DONE) describes the connections.
 
-Adafruit ATWINC1500 breakout for WiFi ( https://www.adafruit.com/product/2999 )
-
-IBT_2 (BTS7960) motor drivers (from eBay)
-
-the eagle CAD schematic (base-station-v1.sch and base-station-v1.pdf) describes the connections.
-
-I have added support for an MCP23017, in place of the Arduino pins for i/o functions. so far, it supports up to 8, and requires my MCP23017 library.
-
-
-Some code is original, most from https://github.com/atanisoft , with some modifications that i have done, and to my understanding, it is based on work i did in the past.
+Some code is original, most from https://github.com/atanisoft , with some modifications that i have done, and to my understanding from Atani, it is based on work i did in the past.
